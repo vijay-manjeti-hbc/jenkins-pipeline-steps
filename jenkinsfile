@@ -1,0 +1,16 @@
+node('master'){
+   stage('checkout'){
+       //Execute inside the custom workspace
+       ws(env.CUSTOM_WORKSPACE) {
+           
+        //Delete existing workspace
+        deleteDir() }
+       checkout([$class: 'GitSCM', branches: [[name: '*/build-automation']], gitTool: 'git_master', submoduleCfg: [], userRemoteConfigs: [[credentialsId: '55e0ced9-4475-47e8-9968-b25e31b08a2b', url: 'https://github.com/saksdirect/srvc-iib-automation-testbed']]]) 
+    }   
+stage('Build') {
+     
+    wrap([$class: 'Xvfb']) { 
+    sh 'ant -f PRO_CustomersAPI/build/build.xml'
+  }
+     }
+}
